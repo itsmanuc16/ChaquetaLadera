@@ -554,9 +554,10 @@ function loadResults(){
     fetch(CONFIG.apiUrl+(CONFIG.apiUrl.indexOf("?")>-1?"&":"?")+"t="+Date.now())
       .then(function(r){return r.json();})
       .then(function(d){
-        renderResults(d.filter(function(x){return x.r>=1&&x.r<=5;}),false);
+        var lista=Array.isArray(d)?d:(d&&d.data)||[];
+        renderResults(lista.map(function(x){return{r:parseInt(x.r,10),c:String(x.c||"").trim()};}).filter(function(x){return x.r>=1&&x.r<=5;}),false);
       })
-      .catch(function(){renderResults([],false);});
+      .catch(function(){renderResults([],false,"No se pudieron cargar los resultados. Reintentando…");});
     return;
   }
   if(!CONFIG.csvUrl){
